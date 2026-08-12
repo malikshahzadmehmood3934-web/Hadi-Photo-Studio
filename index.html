@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Wedding + Shop System</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #fff0f5, #ffe4e1);
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+  h1, h2 { text-align: center; color: #c2185b; }
+  #clock { text-align: center; font-size: 18px; font-weight: bold; color: #880e4f; margin-bottom: 20px; }
+  
+  .tabs{ display:flex; gap:10px; margin-bottom:20px; justify-content:center; }
+  .tab-btn{ padding:12px 25px; border:none; border-radius:8px; background:#f8bbd0; color:#880e4f; font-weight:bold; cursor:pointer; }
+  .tab-btn.active{ background:#c2185b; color:white; }
+  
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  table, th, td { border: 1px solid #f8bbd0; }
+  th { background: #f06292; color: white; padding: 10px; }
+  td { padding: 8px; text-align: center; }
+  
+  .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 8px; background: #c2185b; color: white; cursor: pointer; font-weight:bold; }
+  .btn:hover { background: #880e4f; }
+  input { padding:8px; margin:5px; border:1px solid #f8bbd0; border-radius:5px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>👑 Royal System 👑</h1>
+  <div id="clock"></div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="openTab('wedding')">👑 Wedding Guest</button>
+    <button class="tab-btn" onclick="openTab('shop')">🛒 Shop Billing</button>
+  </div>
+
+  <!-- WEDDING TAB -->
+  <div id="wedding" class="tab-content">
+    <button class="btn" onclick="addGuest()">+ Add Guest</button>
+    <button class="btn" onclick="downloadGuestPDF()">Download PDF</button>
+    <button class="btn" onclick="downloadGuestExcel()">Download Excel</button>
+    <table id="guestTable">
+      <thead>
+        <tr>
+          <th>Serial #</th><th>Name</th><th>Email</th><th>Phone</th><th>Table #</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- SHOP TAB -->
+  <div id="shop" class="tab-content" style="display:none">
+    <h2>Shop Billing</h2>
+    <input type="text" id="itemName" placeholder="Item Name">
+    <input type="number" id="itemPrice" placeholder="Price Rs.">
+    <button class="btn" onclick="addItem()">Add Item</button>
+    <button class="btn" onclick="downloadBillPDF()">Bill PDF</button>
+    <table id="shopTable">
+      <tr><th>Item</th><th>Price Rs.</th></tr>
+    </table>
+    <h3>Total: Rs. <span id="total">0</span></h3>
+  </div>
+</div>
+
+<script>
+  // Live Clock
+  function updateClock(){
+    document.getElementById('clock').innerText = new Date().toLocaleString('en-PK');
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Tabs
+  function openTab(tabName){
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabName).style.display = 'block';
+    event.target.classList.add('active');
+  }
+
+  // WEDDING LOGIC
+  let serial = 1;
+  let guests = [];
+  function addGuest(){
+    let name = prompt("Guest Name:");
+    let email = prompt("Guest Email:");
+    let phone = prompt("Guest Phone:");
+    let table = prompt("Table Number:");
+    if(!name) return;
+
+    let guest = {serial: serial++, name, email, phone, table};
+    guests.push(guest);
+
+    let row = `<tr><td>${guest.serial}</td><td>${guest.name}</td><td>${guest.email}</td><td>${guest.phone}</td><td>${guest.table}</td></tr>`;
+    document.querySelector('#guestTable tbody').innerHTML += row;
+  }
+
+  function downloadGuestPDF(){
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Royal Wedding Guest List", 20, 20);
+    let y = 40;
+    guests.forEach(g => { doc.text(`${g.serial}. ${g.name} - ${g.email} - Table: ${g.table}`, 20, y); y += 10; });
+    doc.save("GuestList.pdf");
+  }
+  function downloadGuestExcel(){
+    const ws = XLSX.utils.json_to_sheet(guests);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Guests");
+    XLSX.writeFile(wb, "GuestList.xlsx");
+  }
+
+  // SHOP LOGIC
+  let shopItems = [];
+  let total = 0;
+  function addItem(){
+    let name = document.getElementById('itemName').value;
+    let price = parseFloat(document.getElementById('itemPrice').value);
+    if(!name || !price) return;
+    shopItems.push({name, price});
+    total += price;
+    document.querySelector('#shopTable').innerHTML += `<tr><td>${name}</td><td>${price}</td></tr>`;
+    document.getElementById('total').innerText = total;
+    document.getElementById('itemName').value = '';
+    document.getElementById('itemPrice').value = '';
+  }
+  function downloadBillPDF(){
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Shop Bill", 20, 20);
+    let y = 40;
+    shopItems.forEach(i => { doc.text(`${i.name} - Rs. ${i.price}`, 20, y); y += 10; });
+    doc.text(`Total: Rs. ${total}`, 20, y+10);
+    doc.save("Bill.pdf");
+  }
+</script>
+</body>
+</html>

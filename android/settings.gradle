@@ -2,16 +2,21 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
+
     plugins {
-        id 'com.android.application' version '8.5.1'  // <-- yahan 8.13.0 ko 8.5.1 karna hai
-        id 'com.android.library' version '8.5.1'      // <-- yahan bhi
+        id 'com.android.application' version '8.5.1'
+        id 'com.android.library' version '8.5.1'
         id 'org.jetbrains.kotlin.android' version '2.0.0'
     }
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    // Capacitor اپنی build.gradle میں Google repository add کرتا ہے،
+    // اس لیے FAIL_ON_PROJECT_REPOS کی وجہ سے build fail نہ ہو۔
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+
     repositories {
         google()
         mavenCentral()
@@ -19,8 +24,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Hadi Studio"
+
 include ':app'
 include ':capacitor-cordova-android-plugins'
-project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
+
+project(':capacitor-cordova-android-plugins').projectDir =
+        new File('./capacitor-cordova-android-plugins/')
 
 apply from: 'capacitor.settings.gradle'

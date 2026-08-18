@@ -1,0 +1,22 @@
+{
+  "appId": "com.hadistudio.events",
+  "appName": "Hadi Studio",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#020617",
+      "showSpinner": true,
+      "spinnerColor": "#f59e0b"
+    }
+  }
+}

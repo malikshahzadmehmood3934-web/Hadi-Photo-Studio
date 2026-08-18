@@ -1,0 +1,21 @@
+appId: com.hadistudio.events
+productName: Hadi Photo Studio
+copyright: Copyright © 2026 Hadi Photo Studio
+files:
+  - dist/**
+  - main.js
+  - preload.js
+  - package.json
+asar: true
+win:
+  target:
+    - nsis
+    - portable
+  artifactName: Hadi-Photo-Studio-${version}-${arch}.${ext}
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+portable:
+  artifactName: Hadi-Photo-Studio-Portable-${version}-${arch}.${ext}

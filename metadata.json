@@ -1,0 +1,10 @@
+{
+  "name": "Remix Hadi Photo Studio - Staff \u0026 Duty Management",
+  "description": "Comprehensive photography studio booking, staff duty management, commercial shop POS, inventory catalog, customer CRM, financial reports, and PDF invoice generation system for Hadi Photo Studio & Events.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

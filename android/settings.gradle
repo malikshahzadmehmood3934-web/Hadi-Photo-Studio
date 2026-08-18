@@ -13,9 +13,9 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // Capacitor اپنی build.gradle میں Google repository add کرتا ہے،
-    // اس لیے FAIL_ON_PROJECT_REPOS کی وجہ سے build fail نہ ہو۔
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    // Capacitor apni build.gradle mein repositories add karta hai.
+    // PREFER_PROJECT ki wajah se Capacitor repositories ko allow kiya jayega.
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
 
     repositories {
         google()
